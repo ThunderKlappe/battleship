@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-import makeShip from "../Ship";
 import makeBoard from "../Gameboard";
 
 test("have coordinates", () => {
@@ -21,12 +20,16 @@ test("attacks only a specific place", () => {
     expect(board.checkPlace(3, 2).attacked).toBe(true);
     expect(board.checkPlace(2, 3).attacked).toBe(false);
 });
+test("ship gets added to board", () => {
+    let board = makeBoard();
+    board.addShip(2, 3, 4, "down");
+    expect(board.getShips()[0].getCurrentHealth()).toEqual(["good", "good"]);
+});
+
 test("ship gets placed on board and attacked", () => {
     let board = makeBoard();
-    let ship = makeShip(1);
-    ship.setStarting(4, 5);
+    board.addShip(1, 4, 5);
     board.attackSpace(4, 5);
-    ship.attackSpace(4, 5);
     expect(board.checkPlace(4, 5).attacked).toBe(true);
-    expect(ship.getCurrentHealth()).toEqual(["damage"]);
+    expect(board.getShips()[0].getCurrentHealth()).toEqual(["damage"]);
 });
