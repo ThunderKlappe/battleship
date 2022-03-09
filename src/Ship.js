@@ -1,7 +1,7 @@
-export default function makeShip(size) {
+export default function makeShip(size, x, y, dir) {
     let _health = Array(size).fill("good");
     let _destroyed = false;
-    let _coordinates = [];
+    let _coordinates = _setStarting(x, y, dir);
 
     function getCurrentHealth() {
         return _health.map(x => x);
@@ -15,18 +15,20 @@ export default function makeShip(size) {
             _destroyed = true;
         }
     }
-    function setStarting(x, y, dir = "right") {
+    function _setStarting(x, y, dir = "right") {
+        let spaces = [];
         for (let i = 0; i < size; i++) {
             if (dir == "right") {
-                _coordinates.push({ xPos: x + i, yPos: y });
+                spaces.push({ xPos: x + i, yPos: y });
             } else if (dir == "left") {
-                _coordinates.push({ xPos: x - i, yPos: y });
+                spaces.push({ xPos: x - i, yPos: y });
             } else if (dir == "down") {
-                _coordinates.push({ xPos: x, yPos: y + i });
+                spaces.push({ xPos: x, yPos: y + i });
             } else if (dir == "up") {
-                _coordinates.push({ xPos: x, yPos: y - i });
+                spaces.push({ xPos: x, yPos: y - i });
             }
         }
+        return spaces;
     }
     function getPosition() {
         return _coordinates.map(x => x);
@@ -38,5 +40,5 @@ export default function makeShip(size) {
         }
     }
 
-    return { getCurrentHealth, isDestroyed, setStarting, getPosition, attackSpace };
+    return { getCurrentHealth, isDestroyed, getPosition, attackSpace };
 }
