@@ -33,3 +33,16 @@ test("ship gets placed on board and attacked", () => {
     expect(board.checkPlace(4, 5).attacked).toBe(true);
     expect(board.getShips()[0].getCurrentHealth()).toEqual(["damage"]);
 });
+test("if all ships are not destroyed, board is not lost", () => {
+    let board = Board();
+    board.addShip(2, 4, 5, "Right");
+    board.attackSpace(4, 5);
+    expect(board.allDestroyed()).toBe(false);
+});
+test("if all ships are destroyed, board is lost", () => {
+    let board = Board();
+    board.addShip(2, 4, 5, "right");
+    board.attackSpace(4, 5);
+    board.attackSpace(5, 5);
+    expect(board.allDestroyed()).toBe(true);
+});
