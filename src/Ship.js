@@ -1,4 +1,4 @@
-export default function makeShip(size, x, y, dir) {
+export default function Ship(size, x, y, dir) {
     let _health = Array(size).fill("good");
     let _destroyed = false;
     let _coordinates = _setStarting(x, y, dir);

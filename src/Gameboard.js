@@ -1,6 +1,6 @@
-import makeShip from "./Ship";
+import Ship from "./Ship";
 
-export default function makeBoard() {
+export default function Board() {
     let _spaces = _initSpaces();
     let _ships = [];
 
@@ -24,7 +24,7 @@ export default function makeBoard() {
         _ships.forEach(ship => ship.attackSpace(x, y));
     }
     function addShip(size, x, y, dir) {
-        _ships.push(makeShip(size, x, y, dir));
+        _ships.push(Ship(size, x, y, dir));
     }
     function getShips() {
         return _ships.map(x => x);
