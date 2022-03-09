@@ -30,7 +30,7 @@ export default function Board() {
         return _ships.map(x => x);
     }
     function allDestroyed() {
-        return !_ships.every(ship => ship.getCurrentHealth().includes("good"));
+        return _ships.every(ship => ship.isDestroyed() == true);
     }
 
     return { getBoard, checkPlace, attackSpace, addShip, getShips, allDestroyed };

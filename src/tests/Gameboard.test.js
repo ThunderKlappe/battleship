@@ -25,6 +25,16 @@ test("ship gets added to board", () => {
     board.addShip(2, 3, 4, "down");
     expect(board.getShips()[0].getCurrentHealth()).toEqual(["good", "good"]);
 });
+test("multiple ships gets added to board", () => {
+    let board = Board();
+    board.addShip(2, 3, 4, "down");
+    board.addShip(1, 7, 8);
+    expect(board.getShips()[0].getPosition()).toEqual([
+        { xPos: 3, yPos: 4 },
+        { xPos: 3, yPos: 5 },
+    ]);
+    expect(board.getShips()[1].getPosition()).toEqual([{ xPos: 7, yPos: 8 }]);
+});
 
 test("ship gets placed on board and attacked", () => {
     let board = Board();
@@ -33,6 +43,7 @@ test("ship gets placed on board and attacked", () => {
     expect(board.checkPlace(4, 5).attacked).toBe(true);
     expect(board.getShips()[0].getCurrentHealth()).toEqual(["damage"]);
 });
+
 test("if all ships are not destroyed, board is not lost", () => {
     let board = Board();
     board.addShip(2, 4, 5, "Right");
@@ -44,5 +55,23 @@ test("if all ships are destroyed, board is lost", () => {
     board.addShip(2, 4, 5, "right");
     board.attackSpace(4, 5);
     board.attackSpace(5, 5);
+    expect(board.allDestroyed()).toBe(true);
+});
+test("checks for all ships to be not destroyed with multiple ships", () => {
+    let board = Board();
+    board.addShip(2, 4, 5, "right");
+    board.addShip(2, 6, 8, "up");
+    board.attackSpace(4, 5);
+    board.attackSpace(5, 5);
+    expect(board.allDestroyed()).toBe(false);
+});
+test("checks for all ships to be destroyed with multiple ships", () => {
+    let board = Board();
+    board.addShip(2, 4, 5, "right");
+    board.addShip(2, 6, 8, "up");
+    board.attackSpace(4, 5);
+    board.attackSpace(5, 5);
+    board.attackSpace(6, 8);
+    board.attackSpace(6, 7);
     expect(board.allDestroyed()).toBe(true);
 });
