@@ -26,3 +26,8 @@ test("when ship is all damaged, destroy ship", () => {
     ship.damage(2);
     expect(ship.isDestroyed()).toBe(true);
 });
+test("ship has a location and a direction", () => {
+    let ship = makeShip(3);
+    ship.setStarting(3, 2, "left");
+    expect(ship.getPosition()).toEqual({ xPos: 3, yPos: 2, dir: "left" });
+});
