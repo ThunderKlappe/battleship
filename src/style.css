@@ -100,6 +100,10 @@ button:active {
     font-size: 30px;
     margin-top: 10px;
 }
+#ship-name {
+    font-size: 22px;
+    font-weight: bold;
+}
 
 .modal.back {
     opacity: 0;

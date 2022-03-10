@@ -112,12 +112,16 @@ export const BuildPage = (() => {
             { shipName: "Cruiser", shipSize: 3 },
             { shipName: "Submarine", shipSize: 3 },
             { shipName: "Destroyer", shipSize: 2 },
+            { shipName: "All Ships Placed", shipSize: 0 },
         ];
         const shipName = DOMManip.getElement("#ship-name");
         let shipIndex = parseInt(shipName.dataset.index);
         shipName.textContent = shipArray[shipIndex].shipName;
         shipName.setAttribute("data-size", shipArray[shipIndex].shipSize);
         shipName.setAttribute("data-index", ++shipIndex);
+        if (shipIndex > 5) {
+            EventHandler.deactivateSpaces("#set-up-board");
+        }
     };
     const toggleRotateButton = () => {
         const rotateButton = DOMManip.getElement("#ship-rotate-button");

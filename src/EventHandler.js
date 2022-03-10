@@ -19,6 +19,15 @@ export const EventHandler = (() => {
             }
         });
     };
+    const deactivateSpaces = id => {
+        DOMManip.getElements(`${id} .board-space`).forEach(space => {
+            space.removeEventListener("click", Game.spaceClicked);
+            if (id == "#set-up-board") {
+                space.removeEventListener("mouseover", BuildPage.hoverSetUp);
+                space.removeEventListener("mouseout", BuildPage.hoverSetUp);
+            }
+        });
+    };
 
-    return { activateNewGameButton, activateNewGameModal, activateSpaces };
+    return { activateNewGameButton, activateNewGameModal, activateSpaces, deactivateSpaces };
 })();
