@@ -22,5 +22,9 @@ export default function Player() {
             _lost = true;
         }
     }
-    return { isLost, toggleTurn, getTurn, addShip, attack };
+    //for testing
+    function getBoard() {
+        return _board;
+    }
+    return { isLost, toggleTurn, getTurn, addShip, attack, getBoard };
 }

@@ -1,4 +1,5 @@
 import { DOMManip } from "./DOMManip";
+import { EventHandler } from "./EventHandler";
 import { Modal } from "./Modal";
 
 export const BuildPage = (() => {
@@ -61,6 +62,8 @@ export const BuildPage = (() => {
         DOMManip.appendChildren(gameContainer, instructions, boardsContainer, newGameButton);
         content.appendChild(gameContainer);
         DOMManip.appendChildren(document.body, header, content);
+
+        EventHandler.activateNewGameButton();
     };
 
     const buildNewGameModal = () => {
@@ -71,7 +74,9 @@ export const BuildPage = (() => {
             "modal-title",
             "Please place your ships on the grid"
         );
-        const shipName = DOMManip.makeNewElement("div", "ship-name", "ship-name");
+        const shipName = DOMManip.makeNewElement("div", "ship-name", "ship-name", "", {
+            "data-index": 0,
+        });
         const rotateButton = DOMManip.makeNewElement(
             "button",
             "ship-rotate-button",
@@ -79,9 +84,40 @@ export const BuildPage = (() => {
             "Rotate"
         );
         const setUpGrid = _makeGrid("set-up-board");
-        DOMManip.appendChildren(newGameModal, newGameTitle, shipName, rotateButton, setUpGrid);
-        Promise.resolve(Modal.displayModal(newGameModal));
+        setUpGrid.classList.add("active");
+        const startGameButton = DOMManip.makeNewElement(
+            "button",
+            "start-game-button",
+            "modal-button",
+            "Start Game"
+        );
+        DOMManip.appendChildren(
+            newGameModal,
+            newGameTitle,
+            shipName,
+            rotateButton,
+            setUpGrid,
+            startGameButton
+        );
+        Promise.resolve(Modal.displayModal(newGameModal))
+            .then(EventHandler.activateStartGameButton())
+            .then(EventHandler.activateSpaces("#set-up-board"))
+            .then(displayBoatSetUp());
+    };
+    const displayBoatSetUp = () => {
+        const shipArray = [
+            { shipName: "Carrier", shipSize: 5 },
+            { shipName: "Battleship", shipSize: 4 },
+            { shipName: "Cruiser", shipSize: 3 },
+            { shipName: "Submarine", shipSize: 3 },
+            { shipName: "Destroyer", shipSize: 2 },
+        ];
+        const shipName = DOMManip.getElement("#ship-name");
+        let shipIndex = parseInt(shipName.dataset.index);
+        shipName.textContent = shipArray[shipIndex].shipName;
+        shipName.setAttribute("data-size", shipArray[shipIndex].shipSize);
+        shipName.setAttribute("data-index", ++shipIndex);
     };
 
-    return { buildStartingPage, buildNewGameModal };
+    return { buildStartingPage, buildNewGameModal, displayBoatSetUp };
 })();

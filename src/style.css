@@ -86,6 +86,15 @@ button:active {
 .board-space {
     border: 1px solid gray;
 }
+
+.board.active .board-space:not(.boat-placed):hover {
+    background-color: #9eff9e;
+    border: 1px solid #4a804a;
+}
+.board-space.boat-placed {
+    background-color: #9ed3ff;
+    border: 1px solid #4a6880;
+}
 .board-label {
     font-size: 30px;
     margin-top: 10px;
