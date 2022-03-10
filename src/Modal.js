@@ -5,7 +5,7 @@ export const Modal = (() => {
         const modalContainer = DOMManip.makeNewElement("div", "modal-background", "modal back");
         modalContainer.appendChild(modal);
         Promise.resolve(document.body.appendChild(modalContainer)).then(() => {
-            modalContainer.classList.add("active");
+            setTimeout(() => modalContainer.classList.add("active"), 0);
         });
     }
     return { displayModal };
