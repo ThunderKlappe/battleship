@@ -2,6 +2,7 @@
 import "./style.css";
 import { BuildPage } from "./BuildPage";
 import Player from "./Player";
+import { DOMManip } from "./DOMManip";
 
 export const Game = (() => {
     const _humanPlayer = Player();
@@ -12,9 +13,17 @@ export const Game = (() => {
         e.currentTarget.parentElement.id == "set-up-board" ? _placeBoat(e) : _attackComputer(e);
     };
     const _placeBoat = e => {
-        e.currentTarget.classList.add("boat-placed");
-        _humanPlayer.addShip(1, e.currentTarget.dataset.xpos, e.currentTarget.dataset.ypos);
+        const hoverSpaces = DOMManip.getElements(".board-space.hover");
+        hoverSpaces.forEach(space => {
+            space.classList.add("boat-placed");
+            space.classList.toggle("hover");
+        });
+        const shipSize = DOMManip.getElement("#ship-name").dataset.size;
+        _humanPlayer.addShip(shipSize, e.currentTarget.dataset.xpos, e.currentTarget.dataset.ypos);
         BuildPage.displayBoatSetUp();
+        console.log(
+            _humanPlayer.getBoard().getShips()[_humanPlayer.getBoard().getShips().length - 1].getPosition()
+        );
     };
     const _attackComputer = e => {};
     const startGame = () => {};
