@@ -1,3 +1,4 @@
+/* eslint-disable no-unexpected-multiline */
 /* eslint-disable no-unused-vars */
 import "./style.css";
 import { BuildPage } from "./BuildPage";
@@ -14,22 +15,28 @@ export const Game = (() => {
     };
     const _placeBoat = e => {
         const hoverSpaces = DOMManip.getElements(".board-space.hover");
-        hoverSpaces.forEach(space => {
-            space.classList.add("boat-placed");
-            space.classList.toggle("hover");
-        });
-        const shipSize = DOMManip.getElement("#ship-name").dataset.size;
-        const shipDirection = DOMManip.getElement("#ship-rotate-button").dataset.direction;
-        _humanPlayer.addShip(
-            shipSize,
-            e.currentTarget.dataset.xpos,
-            e.currentTarget.dataset.ypos,
-            shipDirection
-        );
-        BuildPage.displayBoatSetUp();
-        console.log(
-            _humanPlayer.getBoard().getShips()[_humanPlayer.getBoard().getShips().length - 1].getPosition()
-        );
+        const badHoverSpaces = DOMManip.getElements(".board-space.bad-hover");
+        if (badHoverSpaces.length == 0) {
+            hoverSpaces.forEach(space => {
+                space.classList.add("boat-placed");
+                space.classList.toggle("hover");
+            });
+            const shipSize = DOMManip.getElement("#ship-name").dataset.size;
+            const shipDirection = DOMManip.getElement("#ship-rotate-button").dataset.direction;
+            _humanPlayer.addShip(
+                shipSize,
+                e.currentTarget.dataset.xpos,
+                e.currentTarget.dataset.ypos,
+                shipDirection
+            );
+            BuildPage.displayBoatSetUp(e);
+            console.log(
+                _humanPlayer
+                    .getBoard()
+                    .getShips()
+                    [_humanPlayer.getBoard().getShips().length - 1].getPosition()
+            );
+        }
     };
     const _attackComputer = e => {};
     const startGame = () => {};

@@ -87,7 +87,7 @@ button:active {
     border: 1px solid gray;
 }
 
-.board.active .hover.board-space:not(.boat-placed) {
+.board.active .hover.board-space {
     /* .board.active .hover.board-space { */
     background-color: #9eff9e;
     border: 1px solid #4a804a;
@@ -95,6 +95,10 @@ button:active {
 .board-space.boat-placed {
     background-color: #9ed3ff;
     border: 1px solid #4a6880;
+}
+.board.active .board-space.bad-hover {
+    background-color: #ff9e9e;
+    border: 1px solid #804a4a;
 }
 .board-label {
     font-size: 30px;

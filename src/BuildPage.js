@@ -105,7 +105,53 @@ export const BuildPage = (() => {
             .then(EventHandler.activateSpaces("#set-up-board"))
             .then(displayBoatSetUp());
     };
-    const displayBoatSetUp = () => {
+    const toggleRotateButton = () => {
+        const rotateButton = DOMManip.getElement("#ship-rotate-button");
+        const currentState = rotateButton.dataset.direction;
+        currentState == "right"
+            ? (rotateButton.dataset.direction = "down")
+            : (rotateButton.dataset.direction = "right");
+    };
+    const _badHover = (xPos, yPos, size, direction) => {
+        for (let i = 0; i < size; i++) {
+            let position;
+            if (direction == "right") {
+                let offset;
+                xPos + i < 10 ? (offset = xPos + i) : (offset = xPos - (size - i));
+                position = `${offset}-${yPos}`;
+            } else {
+                let offset;
+                yPos + i < 10 ? (offset = yPos + i) : (offset = yPos - (size - i));
+                position = `${xPos}-${offset}`;
+            }
+            DOMManip.getElement(`#set-up-board #space-${position}`).classList.toggle("bad-hover");
+        }
+    };
+
+    const hoverSetUp = e => {
+        const size = parseInt(DOMManip.getElement("#ship-name").dataset.size);
+        const direction = DOMManip.getElement("#ship-rotate-button").dataset.direction;
+        for (let i = 0; i < size; i++) {
+            let xPos = parseInt(e.currentTarget.dataset.xpos);
+            let yPos = parseInt(e.currentTarget.dataset.ypos);
+            let position;
+            if (direction == "right") {
+                let offset;
+                xPos + i < 10 ? (offset = xPos + i) : (offset = xPos - (size - i));
+                position = `${offset}-${yPos}`;
+            } else {
+                let offset;
+                yPos + i < 10 ? (offset = yPos + i) : (offset = yPos - (size - i));
+                position = `${xPos}-${offset}`;
+            }
+            if (DOMManip.getElement(`#set-up-board #space-${position}`).classList.contains("boat-placed")) {
+                _badHover(xPos, yPos, size, direction);
+                return;
+            }
+            DOMManip.getElement(`#set-up-board #space-${position}`).classList.toggle("hover");
+        }
+    };
+    const displayBoatSetUp = e => {
         const shipArray = [
             { shipName: "Carrier", shipSize: 5 },
             { shipName: "Battleship", shipSize: 4 },
@@ -119,32 +165,11 @@ export const BuildPage = (() => {
         shipName.textContent = shipArray[shipIndex].shipName;
         shipName.setAttribute("data-size", shipArray[shipIndex].shipSize);
         shipName.setAttribute("data-index", ++shipIndex);
+        if (e) {
+            hoverSetUp(e);
+        }
         if (shipIndex > 5) {
             EventHandler.deactivateSpaces("#set-up-board");
-        }
-    };
-    const toggleRotateButton = () => {
-        const rotateButton = DOMManip.getElement("#ship-rotate-button");
-        const currentState = rotateButton.dataset.direction;
-        currentState == "right"
-            ? (rotateButton.dataset.direction = "down")
-            : (rotateButton.dataset.direction = "right");
-    };
-    const hoverSetUp = e => {
-        const size = parseInt(DOMManip.getElement("#ship-name").dataset.size);
-        const direction = DOMManip.getElement("#ship-rotate-button").dataset.direction;
-        for (let i = 0; i < size; i++) {
-            let xPos = parseInt(e.currentTarget.dataset.xpos);
-            let yPos = parseInt(e.currentTarget.dataset.ypos);
-            if (direction == "right") {
-                let offset;
-                xPos + i < 10 ? (offset = xPos + i) : (offset = xPos - (size - i));
-                DOMManip.getElement(`#set-up-board #space-${offset}-${yPos}`).classList.toggle("hover");
-            } else {
-                let offset;
-                yPos + i < 10 ? (offset = yPos + i) : (offset = yPos - (size - i));
-                DOMManip.getElement(`#set-up-board #space-${xPos}-${offset}`).classList.toggle("hover");
-            }
         }
     };
 
