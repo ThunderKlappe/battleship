@@ -88,7 +88,6 @@ button:active {
 }
 
 .board.active .hover.board-space {
-    /* .board.active .hover.board-space { */
     background-color: #9eff9e;
     border: 1px solid #4a804a;
 }
@@ -104,9 +103,8 @@ button:active {
     font-size: 30px;
     margin-top: 10px;
 }
-#ship-name {
-    font-size: 22px;
-    font-weight: bold;
+.page-button {
+    background-color: #e45826;
 }
 
 .modal.back {
@@ -151,4 +149,9 @@ button:active {
 }
 .modal-button {
     background-color: #f0a500;
+}
+
+#ship-name {
+    font-size: 22px;
+    font-weight: bold;
 }

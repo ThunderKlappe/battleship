@@ -4,9 +4,11 @@ import "./style.css";
 import { BuildPage } from "./BuildPage";
 import Player from "./Player";
 import { DOMManip } from "./DOMManip";
+import { Modal } from "./Modal";
 
 export const Game = (() => {
     const _humanPlayer = Player();
+    const _computerPlayer = Player();
     const newGame = () => {
         BuildPage.buildNewGameModal();
     };
@@ -39,7 +41,30 @@ export const Game = (() => {
         }
     };
     const _attackComputer = e => {};
-    const startGame = () => {};
+
+    const _placePlayerShips = () => {
+        _humanPlayer
+            .getBoard()
+            .getShips()
+            .forEach(ship => {
+                ship.getPosition().forEach(position => {
+                    DOMManip.getElement(
+                        `#player-board #space-${position.xPos}-${position.yPos}`
+                    ).classList.add("boat-placed");
+                });
+            });
+    };
+    const startGame = () => {
+        if (DOMManip.getElement("#ship-name").dataset.index == 6) {
+            Modal.closeCurrentModal();
+            _placePlayerShips();
+        } else {
+            const startGameButton = DOMManip.getElement("#start-game-button");
+            startGameButton.setCustomValidity("");
+            startGameButton.setCustomValidity("Please place all of your ships");
+            startGameButton.reportValidity();
+        }
+    };
     return { newGame, spaceClicked, startGame };
 })();
 
