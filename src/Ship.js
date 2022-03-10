@@ -15,8 +15,10 @@ export default function Ship(size, x, y, dir) {
             _destroyed = true;
         }
     }
-    function _setStarting(x, y, dir = "right") {
+    function _setStarting(incomingx, incomingy, dir = "right") {
         let spaces = [];
+        let x = parseInt(incomingx);
+        let y = parseInt(incomingy);
         for (let i = 0; i < size; i++) {
             if (dir == "right") {
                 spaces.push({ xPos: x + i, yPos: y });
