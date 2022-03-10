@@ -8,5 +8,9 @@ export const Modal = (() => {
             setTimeout(() => modalContainer.classList.add("active"), 0);
         });
     }
-    return { displayModal };
+    async function closeCurrentModal() {
+        const modal = DOMManip.getElement("#modal-background");
+        Promise.resolve(modal.classList.remove("active")).then(setTimeout(() => modal.remove(), 200));
+    }
+    return { displayModal, closeCurrentModal };
 })();
