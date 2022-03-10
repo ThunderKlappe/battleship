@@ -81,7 +81,8 @@ export const BuildPage = (() => {
             "button",
             "ship-rotate-button",
             "modal-button",
-            "Rotate"
+            "Rotate",
+            { "data-direction": "right" }
         );
         const setUpGrid = _makeGrid("set-up-board");
         setUpGrid.classList.add("active");
@@ -100,7 +101,7 @@ export const BuildPage = (() => {
             startGameButton
         );
         Promise.resolve(Modal.displayModal(newGameModal))
-            .then(EventHandler.activateStartGameButton())
+            .then(EventHandler.activateNewGameModal())
             .then(EventHandler.activateSpaces("#set-up-board"))
             .then(displayBoatSetUp());
     };
@@ -118,6 +119,30 @@ export const BuildPage = (() => {
         shipName.setAttribute("data-size", shipArray[shipIndex].shipSize);
         shipName.setAttribute("data-index", ++shipIndex);
     };
+    const toggleRotateButton = () => {
+        const rotateButton = DOMManip.getElement("#ship-rotate-button");
+        const currentState = rotateButton.dataset.direction;
+        currentState == "right"
+            ? (rotateButton.dataset.direction = "down")
+            : (rotateButton.dataset.direction = "right");
+    };
+    const hoverSetUp = e => {
+        const size = parseInt(DOMManip.getElement("#ship-name").dataset.size);
+        const direction = DOMManip.getElement("#ship-rotate-button").dataset.direction;
+        for (let i = 0; i < size; i++) {
+            let xPos = parseInt(e.currentTarget.dataset.xpos);
+            let yPos = parseInt(e.currentTarget.dataset.ypos);
+            if (direction == "right") {
+                let offset;
+                xPos + i < 10 ? (offset = xPos + i) : (offset = xPos - (size - i));
+                DOMManip.getElement(`#set-up-board #space-${offset}-${yPos}`).classList.toggle("hover");
+            } else {
+                let offset;
+                yPos + i < 10 ? (offset = yPos + i) : (offset = yPos - (size - i));
+                DOMManip.getElement(`#set-up-board #space-${xPos}-${offset}`).classList.toggle("hover");
+            }
+        }
+    };
 
-    return { buildStartingPage, buildNewGameModal, displayBoatSetUp };
+    return { buildStartingPage, buildNewGameModal, displayBoatSetUp, toggleRotateButton, hoverSetUp };
 })();

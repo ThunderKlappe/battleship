@@ -87,7 +87,8 @@ button:active {
     border: 1px solid gray;
 }
 
-.board.active .board-space:not(.boat-placed):hover {
+.board.active .hover.board-space:not(.boat-placed) {
+    /* .board.active .hover.board-space { */
     background-color: #9eff9e;
     border: 1px solid #4a804a;
 }
