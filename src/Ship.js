@@ -1,7 +1,8 @@
-export default function Ship(size, x, y, dir) {
+export default function Ship(size, x, y, dir, name) {
     let _health = Array(size).fill("good");
     let _destroyed = false;
     let _coordinates = _setStarting(x, y, dir);
+    let _name = name;
 
     function getCurrentHealth() {
         return _health.map(x => x);
@@ -35,6 +36,9 @@ export default function Ship(size, x, y, dir) {
     function getPosition() {
         return _coordinates.map(x => x);
     }
+    function getName() {
+        return _name;
+    }
     function attackSpace(x, y) {
         let attackIndex = _coordinates.findIndex(element => element.xPos == x && element.yPos == y);
         if (attackIndex >= 0) {
@@ -42,5 +46,5 @@ export default function Ship(size, x, y, dir) {
         }
     }
 
-    return { getCurrentHealth, isDestroyed, getPosition, attackSpace };
+    return { getCurrentHealth, isDestroyed, getPosition, getName, attackSpace };
 }

@@ -13,8 +13,8 @@ export default function Player() {
     function getTurn() {
         return _isTurn;
     }
-    function addShip(size, x, y, dir) {
-        _board.addShip(size, x, y, dir);
+    function addShip(size, x, y, dir, name) {
+        _board.addShip(size, x, y, dir, name);
     }
     function attack(x, y) {
         _board.attackSpace(x, y);

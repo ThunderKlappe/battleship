@@ -24,12 +24,14 @@ export const Game = (() => {
                 space.classList.toggle("hover");
             });
             const shipSize = DOMManip.getElement("#ship-name").dataset.size;
+            const shipName = DOMManip.getElement("#ship-name").textContent;
             const shipDirection = DOMManip.getElement("#ship-rotate-button").dataset.direction;
             _humanPlayer.addShip(
                 shipSize,
                 e.currentTarget.dataset.xpos,
                 e.currentTarget.dataset.ypos,
-                shipDirection
+                shipDirection,
+                shipName
             );
             BuildPage.displayBoatSetUp(e);
             console.log(

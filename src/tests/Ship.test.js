@@ -37,3 +37,7 @@ test("when ship is all damaged, destroy ship", () => {
     ship.attackSpace(3, 4);
     expect(ship.isDestroyed()).toBe(true);
 });
+test("ship can have a name", () => {
+    let ship = Ship(3, 3, 2, "down", "Carrier");
+    expect(ship.getName()).toBe("Carrier");
+});
