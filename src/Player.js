@@ -17,10 +17,11 @@ export default function Player() {
         _board.addShip(size, x, y, dir, name);
     }
     function attack(x, y) {
-        _board.attackSpace(x, y);
+        const hitShipIndex = _board.attackSpace(x, y);
         if (_board.allDestroyed()) {
             _lost = true;
         }
+        return hitShipIndex;
     }
     //for testing
     function getBoard() {

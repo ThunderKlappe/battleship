@@ -20,3 +20,9 @@ test("player loses if all of their ships are destroyed", () => {
     player.attack(2, 1);
     expect(player.isLost()).toBe(true);
 });
+test("hitting a player's ship returns what index of ship was hit", () => {
+    let player = Player();
+    player.addShip(2, 4, 5, "right");
+    expect(player.attack(4, 5)).toBe(0);
+    expect(player.attack(0, 0)).toBe(-1);
+});

@@ -41,3 +41,8 @@ test("ship can have a name", () => {
     let ship = Ship(3, 3, 2, "down", "Carrier");
     expect(ship.getName()).toBe("Carrier");
 });
+test("attacking a ship returns if it was hit or not", () => {
+    let ship = Ship(3, 3, 2, "down");
+    expect(ship.attackSpace(3, 2)).toBe(true);
+    expect(ship.attackSpace(7, 8)).toBe(false);
+});

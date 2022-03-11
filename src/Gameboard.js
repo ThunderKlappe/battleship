@@ -23,8 +23,14 @@ export default function Board() {
     }
     function attackSpace(x, y) {
         _spaces[_spaces.findIndex(element => element.xPos == x && element.yPos == y)].attacked = true;
-        _ships.forEach(ship => ship.attackSpace(x, y));
+        let hit = -1;
+        _ships.forEach((ship, index) => {
+            if (ship.attackSpace(x, y)) {
+                hit = index;
+            }
+        });
         _hitList.push({ xPos: x, yPos: y });
+        return hit;
     }
     function addShip(size, x, y, dir, name) {
         _ships.push(Ship(size, x, y, dir, name));

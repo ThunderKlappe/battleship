@@ -43,7 +43,9 @@ export default function Ship(size, x, y, dir, name) {
         let attackIndex = _coordinates.findIndex(element => element.xPos == x && element.yPos == y);
         if (attackIndex >= 0) {
             _damage(attackIndex);
+            return true;
         }
+        return false;
     }
 
     return { getCurrentHealth, isDestroyed, getPosition, getName, attackSpace };

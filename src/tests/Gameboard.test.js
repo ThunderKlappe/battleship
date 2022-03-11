@@ -97,3 +97,10 @@ test("board has a list of all spaces that are occupied", () => {
         { xPos: 6, yPos: 9 },
     ]);
 });
+test("attacking a space returns the index of ship that was hit, or -1 if a miss", () => {
+    let board = Board();
+    board.addShip(2, 4, 5, "right");
+    board.addShip(2, 6, 8, "down");
+    expect(board.attackSpace(6, 8)).toBe(1);
+    expect(board.attackSpace(0, 0)).toBe(-1);
+});
