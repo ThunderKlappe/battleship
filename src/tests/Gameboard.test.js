@@ -75,3 +75,14 @@ test("checks for all ships to be destroyed with multiple ships", () => {
     board.attackSpace(6, 7);
     expect(board.allDestroyed()).toBe(true);
 });
+
+test("board has a list of all spaces that have been attacked", () => {
+    let board = Board();
+    board.addShip(2, 4, 5, "right");
+    board.attackSpace(4, 5);
+    board.attackSpace(5, 5);
+    expect(board.getHitList()).toEqual([
+        { xPos: 4, yPos: 5 },
+        { xPos: 5, yPos: 5 },
+    ]);
+});

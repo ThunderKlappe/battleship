@@ -3,6 +3,7 @@ import Ship from "./Ship";
 export default function Board() {
     let _spaces = _initSpaces();
     let _ships = [];
+    let _hitList = [];
 
     function _initSpaces() {
         let spaces = [];
@@ -22,6 +23,7 @@ export default function Board() {
     function attackSpace(x, y) {
         _spaces[_spaces.findIndex(element => element.xPos == x && element.yPos == y)].attacked = true;
         _ships.forEach(ship => ship.attackSpace(x, y));
+        _hitList.push({ xPos: x, yPos: y });
     }
     function addShip(size, x, y, dir, name) {
         _ships.push(Ship(size, x, y, dir, name));
@@ -29,9 +31,12 @@ export default function Board() {
     function getShips() {
         return _ships.map(x => x);
     }
+    function getHitList() {
+        return _hitList.map(x => x);
+    }
     function allDestroyed() {
         return _ships.every(ship => ship.isDestroyed() == true);
     }
 
-    return { getBoard, checkPlace, attackSpace, addShip, getShips, allDestroyed };
+    return { getBoard, checkPlace, attackSpace, addShip, getShips, getHitList, allDestroyed };
 }
