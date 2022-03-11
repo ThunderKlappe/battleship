@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { DOMManip } from "./DOMManip";
 import { EventHandler } from "./EventHandler";
 import { Modal } from "./Modal";
+import shipArray from "./ships.json";
 
 export const BuildPage = (() => {
     const _makeGrid = id => {
@@ -152,14 +154,6 @@ export const BuildPage = (() => {
         }
     };
     const displayBoatSetUp = e => {
-        const shipArray = [
-            { shipName: "Carrier", shipSize: 5 },
-            { shipName: "Battleship", shipSize: 4 },
-            { shipName: "Cruiser", shipSize: 3 },
-            { shipName: "Submarine", shipSize: 3 },
-            { shipName: "Destroyer", shipSize: 2 },
-            { shipName: "All Ships Placed", shipSize: 0 },
-        ];
         const shipName = DOMManip.getElement("#ship-name");
         let shipIndex = parseInt(shipName.dataset.index);
         shipName.textContent = shipArray[shipIndex].shipName;
@@ -173,5 +167,21 @@ export const BuildPage = (() => {
         }
     };
 
-    return { buildStartingPage, buildNewGameModal, displayBoatSetUp, toggleRotateButton, hoverSetUp };
+    const rebuildBoards = () => {
+        const playerBoardWrapper = DOMManip.getElement("#player-board-wrapper");
+        playerBoardWrapper.firstElementChild.remove();
+        playerBoardWrapper.insertBefore(_makeGrid("player-board"), playerBoardWrapper.lastElementChild);
+        const computerBoardWrapper = DOMManip.getElement("#computer-board-wrapper");
+        computerBoardWrapper.firstElementChild.remove();
+        computerBoardWrapper.insertBefore(_makeGrid("computer-board"), computerBoardWrapper.lastElementChild);
+    };
+
+    return {
+        buildStartingPage,
+        buildNewGameModal,
+        displayBoatSetUp,
+        toggleRotateButton,
+        hoverSetUp,
+        rebuildBoards,
+    };
 })();

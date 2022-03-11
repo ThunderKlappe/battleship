@@ -5,12 +5,15 @@ import { BuildPage } from "./BuildPage";
 import Player from "./Player";
 import { DOMManip } from "./DOMManip";
 import { Modal } from "./Modal";
+import shipArray from "./ships.json";
 
 export const Game = (() => {
-    const _humanPlayer = Player();
-    const _computerPlayer = Player();
+    let _humanPlayer;
+    let _computerPlayer;
     const newGame = () => {
         BuildPage.buildNewGameModal();
+        _humanPlayer = Player();
+        _computerPlayer = Player();
     };
     const spaceClicked = e => {
         e.currentTarget.parentElement.id == "set-up-board" ? _placeBoat(e) : _attackComputer(e);
@@ -34,12 +37,6 @@ export const Game = (() => {
                 shipName
             );
             BuildPage.displayBoatSetUp(e);
-            console.log(
-                _humanPlayer
-                    .getBoard()
-                    .getShips()
-                    [_humanPlayer.getBoard().getShips().length - 1].getPosition()
-            );
         }
     };
     const _attackComputer = e => {};
@@ -56,10 +53,77 @@ export const Game = (() => {
                 });
             });
     };
+    const _placeComputerShips = () => {
+        _computerPlayer
+            .getBoard()
+            .getShips()
+            .forEach(ship => {
+                ship.getPosition().forEach(position => {
+                    DOMManip.getElement(
+                        `#computer-board #space-${position.xPos}-${position.yPos}`
+                    ).classList.add("boat-placed");
+                });
+            });
+    };
+    const _generateComputerShips = () => {
+        let i = 0;
+        //go through each ship
+        while (i < shipArray.length - 1) {
+            let xPos;
+            let yPos;
+            let direction;
+            //randomly pick a direction either right or down
+            Math.floor(Math.random() * 2) == 0 ? (direction = "right") : (direction = "down");
+            if (direction == "right") {
+                //restrict the random so it doesn't pick a starting place that would put the pieces outside
+                //of the grid
+                xPos = Math.floor(Math.random() * (10 - shipArray[i].shipSize));
+                yPos = Math.floor(Math.random() * 10);
+            } else {
+                xPos = Math.floor(Math.random() * 10);
+                yPos = Math.floor(Math.random() * (10 - shipArray[i].shipSize));
+            }
+            let taken = false;
+            let valid = true;
+            _computerPlayer
+                .getBoard()
+                .getShips()
+                .forEach(ship => {
+                    ship.getPosition().forEach(pos => {
+                        //look at each of the current ships
+                        for (let j = 0; j < shipArray[i].shipSize; j++) {
+                            //and compare their coordinates to the possible coordinates of this new ship
+                            if (direction == "right") {
+                                if (xPos + j == pos.xPos && yPos == pos.yPos) {
+                                    //if it's already taken, can't submit the new ship
+                                    taken = true;
+                                }
+                            }
+                            if (direction == "down") {
+                                if (xPos == pos.xPos && yPos + j == pos.yPos) {
+                                    taken = true;
+                                }
+                            }
+                        }
+                    });
+                });
+            //if the space is not already taken, add the ship to the Player's board
+            if (!taken) {
+                _computerPlayer.addShip(shipArray[i].shipSize, xPos, yPos, direction, shipArray[i].shipName);
+                console.log(_computerPlayer.getBoard().getShips()[i].getPosition());
+                //go to the next ship in the array
+                i++;
+            }
+        }
+        _placeComputerShips();
+    };
     const startGame = () => {
         if (DOMManip.getElement("#ship-name").dataset.index == 6) {
-            Modal.closeCurrentModal();
+            Promise.resolve(Modal.closeCurrentModal());
+
+            BuildPage.rebuildBoards();
             _placePlayerShips();
+            _generateComputerShips();
         } else {
             const startGameButton = DOMManip.getElement("#start-game-button");
             startGameButton.setCustomValidity("");

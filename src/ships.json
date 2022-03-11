@@ -1,0 +1,8 @@
+[
+    { "shipName": "Carrier", "shipSize": 5 },
+    { "shipName": "Battleship", "shipSize": 4 },
+    { "shipName": "Cruiser", "shipSize": 3 },
+    { "shipName": "Submarine", "shipSize": 3 },
+    { "shipName": "Destroyer", "shipSize": 2 },
+    { "shipName": "All Ships Placed", "shipSize": 0 }
+]
