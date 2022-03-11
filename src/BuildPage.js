@@ -5,6 +5,9 @@ import { Modal } from "./Modal";
 import shipArray from "./ships.json";
 
 export const BuildPage = (() => {
+    const activateBoard = id => {
+        DOMManip.getElement(id).classList.add("active");
+    };
     const _makeGrid = id => {
         const gridContainer = DOMManip.makeNewElement("div", id, "board");
         for (let i = 0; i < 10; i++) {
@@ -87,7 +90,7 @@ export const BuildPage = (() => {
             { "data-direction": "right" }
         );
         const setUpGrid = _makeGrid("set-up-board");
-        setUpGrid.classList.add("active");
+
         const startGameButton = DOMManip.makeNewElement(
             "button",
             "start-game-button",
@@ -102,10 +105,12 @@ export const BuildPage = (() => {
             setUpGrid,
             startGameButton
         );
+
         Promise.resolve(Modal.displayModal(newGameModal))
             .then(EventHandler.activateNewGameModal())
             .then(EventHandler.activateSpaces("#set-up-board"))
-            .then(displayBoatSetUp());
+            .then(displayBoatSetUp())
+            .then(activateBoard("#set-up-board"));
     };
     const toggleRotateButton = () => {
         const rotateButton = DOMManip.getElement("#ship-rotate-button");
@@ -153,6 +158,10 @@ export const BuildPage = (() => {
             DOMManip.getElement(`#set-up-board #space-${position}`).classList.toggle("hover");
         }
     };
+    const hoverAttack = e => {
+        const position = `${e.currentTarget.dataset.xpos}-${e.currentTarget.dataset.ypos}`;
+        DOMManip.getElement(`#computer-board #space-${position}`).classList.toggle("hover");
+    };
     const displayBoatSetUp = e => {
         const shipName = DOMManip.getElement("#ship-name");
         let shipIndex = parseInt(shipName.dataset.index);
@@ -176,6 +185,9 @@ export const BuildPage = (() => {
             });
         });
     };
+    const fillInAttack = (x, y, playerName) => {
+        DOMManip.getElement(`#${playerName}-board #space-${x}-${y}`).classList.add("attacked");
+    };
 
     const rebuildBoards = () => {
         const playerBoardWrapper = DOMManip.getElement("#player-board-wrapper");
@@ -187,12 +199,15 @@ export const BuildPage = (() => {
     };
 
     return {
+        activateBoard,
         buildStartingPage,
         buildNewGameModal,
         displayBoatSetUp,
         toggleRotateButton,
         hoverSetUp,
+        hoverAttack,
         placePlayerShips,
+        fillInAttack,
         rebuildBoards,
     };
 })();

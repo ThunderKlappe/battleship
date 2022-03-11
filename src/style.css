@@ -80,10 +80,14 @@ button:active {
     height: 300px;
     display: grid;
     grid-template-columns: repeat(10, 10% [col-start]);
+    grid-template-rows: repeat(10, 10% [row-start]);
     background-color: #fff7ea;
     border: 2px solid black;
 }
 .board-space {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: 1px solid gray;
 }
 
@@ -98,6 +102,15 @@ button:active {
 .board.active .board-space.bad-hover {
     background-color: #ff9e9e;
     border: 1px solid #804a4a;
+}
+.board-space.attacked {
+    background-color: #fdff9e;
+    border: 1px solid #7c804a;
+}
+.board-space.attacked::before {
+    color: #7c804a;
+    font: var(--fa-font-solid);
+    content: "\f192";
 }
 .board-label {
     font-size: 30px;

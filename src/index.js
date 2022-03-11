@@ -6,6 +6,7 @@ import Player from "./Player";
 import { DOMManip } from "./DOMManip";
 import { Modal } from "./Modal";
 import shipArray from "./ships.json";
+import { EventHandler } from "./EventHandler";
 
 export const Game = (() => {
     let _humanPlayer;
@@ -40,6 +41,8 @@ export const Game = (() => {
         }
     };
     const _attackPlayer = (player, x, y) => {
+        let playerName;
+        player == _humanPlayer ? (playerName = "player") : (playerName = "computer");
         let valid = true;
         player
             .getBoard()
@@ -51,13 +54,16 @@ export const Game = (() => {
                 }
             });
         player.attack(x, y);
+        BuildPage.fillInAttack(x, y, playerName);
+        return true;
     };
     const _attackComputerPlayer = e => {
         const xPos = e.currentTarget.dataset.xpos;
         const yPos = e.currentTarget.dataset.ypos;
-        _attackPlayer(_computerPlayer);
+        _attackPlayer(_computerPlayer, xPos, yPos);
     };
 
+    //for testing only
     const _placeComputerShips = () => {
         _computerPlayer
             .getBoard()
@@ -129,6 +135,8 @@ export const Game = (() => {
             BuildPage.rebuildBoards();
             BuildPage.placePlayerShips(_humanPlayer.getBoard().getShips());
             _generateComputerShips();
+            BuildPage.activateBoard("#computer-board");
+            EventHandler.activateSpaces("#computer-board");
         } else {
             const startGameButton = DOMManip.getElement("#start-game-button");
             startGameButton.setCustomValidity("");

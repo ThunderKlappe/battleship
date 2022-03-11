@@ -16,6 +16,9 @@ export const EventHandler = (() => {
             if (id == "#set-up-board") {
                 space.addEventListener("mouseover", BuildPage.hoverSetUp);
                 space.addEventListener("mouseout", BuildPage.hoverSetUp);
+            } else if (id == "#computer-board") {
+                space.addEventListener("mouseover", BuildPage.hoverAttack);
+                space.addEventListener("mouseout", BuildPage.hoverAttack);
             }
         });
     };
