@@ -167,6 +167,16 @@ export const BuildPage = (() => {
         }
     };
 
+    const placePlayerShips = ships => {
+        ships.forEach(ship => {
+            ship.getPosition().forEach(position => {
+                DOMManip.getElement(`#player-board #space-${position.xPos}-${position.yPos}`).classList.add(
+                    "boat-placed"
+                );
+            });
+        });
+    };
+
     const rebuildBoards = () => {
         const playerBoardWrapper = DOMManip.getElement("#player-board-wrapper");
         playerBoardWrapper.firstElementChild.remove();
@@ -182,6 +192,7 @@ export const BuildPage = (() => {
         displayBoatSetUp,
         toggleRotateButton,
         hoverSetUp,
+        placePlayerShips,
         rebuildBoards,
     };
 })();

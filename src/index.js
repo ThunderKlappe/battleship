@@ -16,7 +16,7 @@ export const Game = (() => {
         _computerPlayer = Player();
     };
     const spaceClicked = e => {
-        e.currentTarget.parentElement.id == "set-up-board" ? _placeBoat(e) : _attackComputer(e);
+        e.currentTarget.parentElement.id == "set-up-board" ? _placeBoat(e) : _attackComputerPlayer(e);
     };
     const _placeBoat = e => {
         const hoverSpaces = DOMManip.getElements(".board-space.hover");
@@ -39,20 +39,25 @@ export const Game = (() => {
             BuildPage.displayBoatSetUp(e);
         }
     };
-    const _attackComputer = e => {};
-
-    const _placePlayerShips = () => {
-        _humanPlayer
+    const _attackPlayer = (player, x, y) => {
+        let valid = true;
+        player
             .getBoard()
-            .getShips()
-            .forEach(ship => {
-                ship.getPosition().forEach(position => {
-                    DOMManip.getElement(
-                        `#player-board #space-${position.xPos}-${position.yPos}`
-                    ).classList.add("boat-placed");
-                });
+            .getHitList()
+            .forEach(space => {
+                if (space.xPos == x && space.yPos == y) {
+                    valid = false;
+                    return false;
+                }
             });
+        player.attack(x, y);
     };
+    const _attackComputerPlayer = e => {
+        const xPos = e.currentTarget.dataset.xpos;
+        const yPos = e.currentTarget.dataset.ypos;
+        _attackPlayer(_computerPlayer);
+    };
+
     const _placeComputerShips = () => {
         _computerPlayer
             .getBoard()
@@ -115,14 +120,14 @@ export const Game = (() => {
                 i++;
             }
         }
-        _placeComputerShips();
+        //_placeComputerShips();
     };
     const startGame = () => {
         if (DOMManip.getElement("#ship-name").dataset.index == 6) {
             Promise.resolve(Modal.closeCurrentModal());
 
             BuildPage.rebuildBoards();
-            _placePlayerShips();
+            BuildPage.placePlayerShips(_humanPlayer.getBoard().getShips());
             _generateComputerShips();
         } else {
             const startGameButton = DOMManip.getElement("#start-game-button");
