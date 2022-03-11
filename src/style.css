@@ -112,6 +112,11 @@ button:active {
     font: var(--fa-font-solid);
     content: "\f192";
 }
+.board-space.attacked.hit::before {
+    color: #804a4a;
+    font: var(--fa-font-solid);
+    content: "\f111";
+}
 .board-label {
     font-size: 30px;
     margin-top: 10px;

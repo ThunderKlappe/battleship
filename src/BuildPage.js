@@ -185,8 +185,11 @@ export const BuildPage = (() => {
             });
         });
     };
-    const fillInAttack = (x, y, playerName) => {
+    const fillInAttack = (x, y, playerName, hit) => {
         DOMManip.getElement(`#${playerName}-board #space-${x}-${y}`).classList.add("attacked");
+        if (hit) {
+            DOMManip.getElement(`#${playerName}-board #space-${x}-${y}`).classList.add("hit");
+        }
     };
 
     const rebuildBoards = () => {

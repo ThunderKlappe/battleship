@@ -54,7 +54,16 @@ export const Game = (() => {
                 }
             });
         player.attack(x, y);
-        BuildPage.fillInAttack(x, y, playerName);
+        let hit = false;
+        if (
+            player
+                .getBoard()
+                .getSpaceList()
+                .some(space => space.xPos == x && space.yPos == y)
+        ) {
+            hit = true;
+        }
+        BuildPage.fillInAttack(x, y, playerName, hit);
         return true;
     };
     const _attackComputerPlayer = e => {
