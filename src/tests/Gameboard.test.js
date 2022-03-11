@@ -86,3 +86,14 @@ test("board has a list of all spaces that have been attacked", () => {
         { xPos: 5, yPos: 5 },
     ]);
 });
+test("board has a list of all spaces that are occupied", () => {
+    let board = Board();
+    board.addShip(2, 4, 5, "right");
+    board.addShip(2, 6, 8, "down");
+    expect(board.getSpaceList()).toEqual([
+        { xPos: 4, yPos: 5 },
+        { xPos: 5, yPos: 5 },
+        { xPos: 6, yPos: 8 },
+        { xPos: 6, yPos: 9 },
+    ]);
+});

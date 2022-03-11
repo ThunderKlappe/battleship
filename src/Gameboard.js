@@ -4,6 +4,7 @@ export default function Board() {
     let _spaces = _initSpaces();
     let _ships = [];
     let _hitList = [];
+    let _spaceList = [];
 
     function _initSpaces() {
         let spaces = [];
@@ -27,6 +28,13 @@ export default function Board() {
     }
     function addShip(size, x, y, dir, name) {
         _ships.push(Ship(size, x, y, dir, name));
+        for (let i = 0; i < size; i++) {
+            if (dir == "right") {
+                _spaceList.push({ xPos: parseInt(x) + i, yPos: y });
+            } else {
+                _spaceList.push({ xPos: x, yPos: parseInt(y) + i });
+            }
+        }
     }
     function getShips() {
         return _ships.map(x => x);
@@ -34,9 +42,12 @@ export default function Board() {
     function getHitList() {
         return _hitList.map(x => x);
     }
+    function getSpaceList() {
+        return _spaceList.map(x => x);
+    }
     function allDestroyed() {
         return _ships.every(ship => ship.isDestroyed() == true);
     }
 
-    return { getBoard, checkPlace, attackSpace, addShip, getShips, getHitList, allDestroyed };
+    return { getBoard, checkPlace, attackSpace, addShip, getShips, getHitList, getSpaceList, allDestroyed };
 }
