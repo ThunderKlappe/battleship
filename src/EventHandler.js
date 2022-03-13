@@ -31,6 +31,17 @@ export const EventHandler = (() => {
             }
         });
     };
+    const deactivateAttackedSpace = space => {
+        space.removeEventListener("click", Game.spaceClicked);
+        space.removeEventListener("mouseover", BuildPage.hoverAttack);
+        space.removeEventListener("mouseout", BuildPage.hoverAttack);
+    };
 
-    return { activateNewGameButton, activateNewGameModal, activateSpaces, deactivateSpaces };
+    return {
+        activateNewGameButton,
+        activateNewGameModal,
+        activateSpaces,
+        deactivateSpaces,
+        deactivateAttackedSpace,
+    };
 })();

@@ -63,6 +63,7 @@ export const Game = (() => {
         ) {
             hit = true;
         }
+
         BuildPage.fillInAttack(x, y, playerName, hit);
         return true;
     };
@@ -70,6 +71,8 @@ export const Game = (() => {
         const xPos = e.currentTarget.dataset.xpos;
         const yPos = e.currentTarget.dataset.ypos;
         _attackPlayer(_computerPlayer, xPos, yPos);
+        EventHandler.deactivateAttackedSpace(e.currentTarget);
+        BuildPage.hoverAttack(e);
     };
 
     //for testing only
