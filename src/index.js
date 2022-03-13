@@ -53,7 +53,7 @@ export const Game = (() => {
                     return false;
                 }
             });
-        player.attack(x, y);
+        const attackedShip = player.attack(x, y);
         let hit = false;
         if (
             player
@@ -63,8 +63,15 @@ export const Game = (() => {
         ) {
             hit = true;
         }
-
         BuildPage.fillInAttack(x, y, playerName, hit);
+        if (attackedShip >= 0) {
+            if (player.getBoard().getShips()[attackedShip].isDestroyed()) {
+                BuildPage.markDestroyedShip(
+                    player.getBoard().getShips()[attackedShip].getPosition(),
+                    playerName
+                );
+            }
+        }
         return true;
     };
     const _attackComputerPlayer = e => {

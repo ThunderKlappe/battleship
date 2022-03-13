@@ -117,6 +117,16 @@ button:active {
     font: var(--fa-font-solid);
     content: "\f111";
 }
+.board-space.destroyed {
+    background-color: #ff9e9e;
+    border-color: #804a4a;
+}
+.board-space.destroyed::before {
+    color: #804a4a;
+    font: var(--fa-font-solid);
+    content: "\f057";
+}
+
 .board-label {
     font-size: 30px;
     margin-top: 10px;

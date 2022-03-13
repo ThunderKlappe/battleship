@@ -191,6 +191,13 @@ export const BuildPage = (() => {
             DOMManip.getElement(`#${playerName}-board #space-${x}-${y}`).classList.add("hit");
         }
     };
+    const markDestroyedShip = (position, playerName) => {
+        position.forEach(space => {
+            const spaceElem = DOMManip.getElement(`#${playerName}-board #space-${space.xPos}-${space.yPos}`);
+            spaceElem.classList.add("destroyed");
+            spaceElem.classList.remove("hit");
+        });
+    };
 
     const rebuildBoards = () => {
         const playerBoardWrapper = DOMManip.getElement("#player-board-wrapper");
@@ -211,6 +218,7 @@ export const BuildPage = (() => {
         hoverAttack,
         placePlayerShips,
         fillInAttack,
+        markDestroyedShip,
         rebuildBoards,
     };
 })();
