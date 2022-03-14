@@ -1,5 +1,5 @@
 export default function Ship(size, x, y, dir, name) {
-    let _health = Array(size).fill("good");
+    let _health = Array.from({ length: size }, () => "good");
     let _destroyed = false;
     let _coordinates = _setStarting(x, y, dir);
     let _name = name;
