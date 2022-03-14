@@ -44,9 +44,8 @@ export const Game = (() => {
             BuildPage.displayBoatSetUp(e);
         }
     };
-    const _attackPlayer = (player, x, y) => {
-        let playerName;
-        player == _humanPlayer ? (playerName = "player") : (playerName = "computer");
+
+    const _isAttackValid = (player, x, y) => {
         let valid = true;
         player
             .getBoard()
@@ -56,25 +55,38 @@ export const Game = (() => {
                     valid = false;
                 }
             });
-        if (valid) {
+        return valid;
+    };
+
+    const _isAttackHit = (player, x, y) => {
+        let hit = false;
+        if (
+            player
+                .getBoard()
+                .getSpaceList()
+                .some(space => space.xPos == x && space.yPos == y)
+        ) {
+            hit = true;
+        }
+        return hit;
+    };
+
+    const _checkDestroyed = (player, playerName, attackedShip) => {
+        if (player.getBoard().getShips()[attackedShip].isDestroyed()) {
+            BuildPage.markDestroyedShip(player.getBoard().getShips()[attackedShip].getPosition(), playerName);
+        }
+    };
+
+    const _attackPlayer = (player, x, y) => {
+        let playerName;
+        player == _humanPlayer ? (playerName = "player") : (playerName = "computer");
+
+        if (_isAttackValid(player, x, y)) {
             const attackedShip = player.attack(x, y);
-            let hit = false;
-            if (
-                player
-                    .getBoard()
-                    .getSpaceList()
-                    .some(space => space.xPos == x && space.yPos == y)
-            ) {
-                hit = true;
-            }
+            let hit = _isAttackHit(player, x, y);
             BuildPage.fillInAttack(x, y, playerName, hit);
             if (attackedShip >= 0) {
-                if (player.getBoard().getShips()[attackedShip].isDestroyed()) {
-                    BuildPage.markDestroyedShip(
-                        player.getBoard().getShips()[attackedShip].getPosition(),
-                        playerName
-                    );
-                }
+                _checkDestroyed(player, playerName, attackedShip);
             }
             return true;
         }
