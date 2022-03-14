@@ -11,7 +11,7 @@ export const EventHandler = (() => {
         DOMManip.getElement("#start-game-button").addEventListener("click", Game.startGame);
     };
     const activateSpaces = id => {
-        DOMManip.getElements(`${id} .board-space`).forEach(space => {
+        DOMManip.getElements(`${id} .board-space:not(.attacked)`).forEach(space => {
             space.addEventListener("click", Game.spaceClicked);
             if (id == "#set-up-board") {
                 space.addEventListener("mouseover", BuildPage.hoverSetUp);
@@ -28,20 +28,23 @@ export const EventHandler = (() => {
             if (id == "#set-up-board") {
                 space.removeEventListener("mouseover", BuildPage.hoverSetUp);
                 space.removeEventListener("mouseout", BuildPage.hoverSetUp);
+            } else if (id == "#computer-board") {
+                space.removeEventListener("mouseover", BuildPage.hoverAttack);
+                space.removeEventListener("mouseout", BuildPage.hoverAttack);
             }
         });
     };
-    const deactivateAttackedSpace = space => {
-        space.removeEventListener("click", Game.spaceClicked);
-        space.removeEventListener("mouseover", BuildPage.hoverAttack);
-        space.removeEventListener("mouseout", BuildPage.hoverAttack);
-    };
+    // const deactivateAttackedSpace = space => {
+    //     space.removeEventListener("click", Game.spaceClicked);
+    //     space.removeEventListener("mouseover", BuildPage.hoverAttack);
+    //     space.removeEventListener("mouseout", BuildPage.hoverAttack);
+    // };
 
     return {
         activateNewGameButton,
         activateNewGameModal,
         activateSpaces,
         deactivateSpaces,
-        deactivateAttackedSpace,
+        //deactivateAttackedSpace,
     };
 })();

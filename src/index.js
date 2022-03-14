@@ -19,6 +19,10 @@ export const Game = (() => {
     const spaceClicked = e => {
         e.currentTarget.parentElement.id == "set-up-board" ? _placeBoat(e) : _attackComputerPlayer(e);
     };
+    const _switchTurns = () => {
+        _humanPlayer.toggleTurn();
+        _computerPlayer.toggleTurn();
+    };
     const _placeBoat = e => {
         const hoverSpaces = DOMManip.getElements(".board-space.hover");
         const badHoverSpaces = DOMManip.getElements(".board-space.bad-hover");
@@ -50,36 +54,40 @@ export const Game = (() => {
             .forEach(space => {
                 if (space.xPos == x && space.yPos == y) {
                     valid = false;
-                    return false;
                 }
             });
-        const attackedShip = player.attack(x, y);
-        let hit = false;
-        if (
-            player
-                .getBoard()
-                .getSpaceList()
-                .some(space => space.xPos == x && space.yPos == y)
-        ) {
-            hit = true;
-        }
-        BuildPage.fillInAttack(x, y, playerName, hit);
-        if (attackedShip >= 0) {
-            if (player.getBoard().getShips()[attackedShip].isDestroyed()) {
-                BuildPage.markDestroyedShip(
-                    player.getBoard().getShips()[attackedShip].getPosition(),
-                    playerName
-                );
+        if (valid) {
+            const attackedShip = player.attack(x, y);
+            let hit = false;
+            if (
+                player
+                    .getBoard()
+                    .getSpaceList()
+                    .some(space => space.xPos == x && space.yPos == y)
+            ) {
+                hit = true;
             }
+            BuildPage.fillInAttack(x, y, playerName, hit);
+            if (attackedShip >= 0) {
+                if (player.getBoard().getShips()[attackedShip].isDestroyed()) {
+                    BuildPage.markDestroyedShip(
+                        player.getBoard().getShips()[attackedShip].getPosition(),
+                        playerName
+                    );
+                }
+            }
+            return true;
         }
-        return true;
+        return false;
     };
     const _attackComputerPlayer = e => {
         const xPos = e.currentTarget.dataset.xpos;
         const yPos = e.currentTarget.dataset.ypos;
         _attackPlayer(_computerPlayer, xPos, yPos);
-        EventHandler.deactivateAttackedSpace(e.currentTarget);
+        EventHandler.deactivateSpaces("#computer-board");
         BuildPage.hoverAttack(e);
+        _switchTurns();
+        _playTurn();
     };
 
     //for testing only
@@ -147,6 +155,33 @@ export const Game = (() => {
         }
         //_placeComputerShips();
     };
+    const _coinFlip = () => Math.floor(Math.random() * 2);
+    const _chooseTurn = () => {
+        if (_coinFlip()) {
+            _humanPlayer.toggleTurn();
+        } else _computerPlayer.toggleTurn();
+    };
+
+    const _computerPlayersTurn = () => {
+        let playedValid = false;
+        while (!playedValid) {
+            playedValid = _attackPlayer(
+                _humanPlayer,
+                Math.floor(Math.random() * 10),
+                Math.floor(Math.random() * 10)
+            );
+        }
+        _switchTurns();
+    };
+    const _playTurn = () => {
+        if (_humanPlayer.getTurn()) {
+            EventHandler.activateSpaces("#computer-board");
+        } else {
+            _computerPlayersTurn();
+            _playTurn();
+        }
+    };
+
     const startGame = () => {
         if (DOMManip.getElement("#ship-name").dataset.index == 6) {
             Promise.resolve(Modal.closeCurrentModal());
@@ -155,7 +190,8 @@ export const Game = (() => {
             BuildPage.placePlayerShips(_humanPlayer.getBoard().getShips());
             _generateComputerShips();
             BuildPage.activateBoard("#computer-board");
-            EventHandler.activateSpaces("#computer-board");
+            _chooseTurn();
+            _playTurn();
         } else {
             const startGameButton = DOMManip.getElement("#start-game-button");
             startGameButton.setCustomValidity("");
@@ -168,5 +204,4 @@ export const Game = (() => {
 
 const initPage = (() => {
     Promise.resolve(BuildPage.buildStartingPage());
-    // .then(Promise.resolve(BuildPage.buildNewGameModal()));
 })();
