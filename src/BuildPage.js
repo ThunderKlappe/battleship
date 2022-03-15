@@ -158,9 +158,13 @@ export const BuildPage = (() => {
             DOMManip.getElement(`#set-up-board #space-${position}`).classList.toggle("hover");
         }
     };
-    const hoverAttack = e => {
+    const addHoverAttack = e => {
         const position = `${e.currentTarget.dataset.xpos}-${e.currentTarget.dataset.ypos}`;
-        DOMManip.getElement(`#computer-board #space-${position}`).classList.toggle("hover");
+        DOMManip.getElement(`#computer-board #space-${position}`).classList.add("hover");
+    };
+    const removeHoverAttack = e => {
+        const position = `${e.currentTarget.dataset.xpos}-${e.currentTarget.dataset.ypos}`;
+        DOMManip.getElement(`#computer-board #space-${position}`).classList.remove("hover");
     };
     const displayBoatSetUp = e => {
         const shipName = DOMManip.getElement("#ship-name");
@@ -198,6 +202,9 @@ export const BuildPage = (() => {
             spaceElem.classList.remove("hit");
         });
     };
+    const displayMessage = message => {
+        DOMManip.getElement("#game-instructions").textContent = message;
+    };
 
     const rebuildBoards = () => {
         const playerBoardWrapper = DOMManip.getElement("#player-board-wrapper");
@@ -215,10 +222,12 @@ export const BuildPage = (() => {
         displayBoatSetUp,
         toggleRotateButton,
         hoverSetUp,
-        hoverAttack,
+        addHoverAttack,
+        removeHoverAttack,
         placePlayerShips,
         fillInAttack,
         markDestroyedShip,
+        displayMessage,
         rebuildBoards,
     };
 })();

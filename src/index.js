@@ -74,7 +74,9 @@ export const Game = (() => {
     const _checkDestroyed = (player, playerName, attackedShip) => {
         if (player.getBoard().getShips()[attackedShip].isDestroyed()) {
             BuildPage.markDestroyedShip(player.getBoard().getShips()[attackedShip].getPosition(), playerName);
+            return true;
         }
+        return false;
     };
 
     const _attackPlayer = (player, x, y) => {
@@ -84,20 +86,42 @@ export const Game = (() => {
         if (_isAttackValid(player, x, y)) {
             const attackedShip = player.attack(x, y);
             let hit = _isAttackHit(player, x, y);
+            player.lastResult = hit;
             BuildPage.fillInAttack(x, y, playerName, hit);
             if (attackedShip >= 0) {
-                _checkDestroyed(player, playerName, attackedShip);
+                if (_checkDestroyed(player, playerName, attackedShip)) {
+                    player.lastResult = player.getBoard().getShips()[attackedShip].getName();
+                }
             }
             return true;
         }
         return false;
     };
+
+    const _displayLastResult = player => {
+        const lastResult = player.lastResult;
+
+        if (player == _computerPlayer) {
+            lastResult == true
+                ? BuildPage.displayMessage("You fire at the computer... It's a Hit!")
+                : lastResult == false
+                ? BuildPage.displayMessage("You fire at the computer... It's a Miss...")
+                : BuildPage.displayMessage(`You sunk their ${lastResult}!`);
+        } else {
+            lastResult == true
+                ? BuildPage.displayMessage("The computer fires at you... It's a Hit...")
+                : lastResult == false
+                ? BuildPage.displayMessage("The computer fires at you... It's a Miss!")
+                : BuildPage.displayMessage(`They sunk your ${lastResult}!`);
+        }
+    };
     const _attackComputerPlayer = e => {
         const xPos = e.currentTarget.dataset.xpos;
         const yPos = e.currentTarget.dataset.ypos;
         _attackPlayer(_computerPlayer, xPos, yPos);
+        _displayLastResult(_computerPlayer);
         EventHandler.deactivateSpaces("#computer-board");
-        BuildPage.hoverAttack(e);
+        BuildPage.removeHoverAttack(e);
         _switchTurns();
         _playTurn();
     };
@@ -167,11 +191,19 @@ export const Game = (() => {
         }
         //_placeComputerShips();
     };
+    const _randomPause = (minLength, maxLength) => {
+        const pauseLength = Math.floor(Math.random() * (maxLength - minLength) + minLength);
+        return new Promise(resolve => setTimeout(resolve, pauseLength));
+    };
     const _coinFlip = () => Math.floor(Math.random() * 2);
     const _chooseTurn = () => {
         if (_coinFlip()) {
             _humanPlayer.toggleTurn();
-        } else _computerPlayer.toggleTurn();
+            BuildPage.displayMessage("Flipping Coin... Player goes first.");
+        } else {
+            _computerPlayer.toggleTurn();
+            BuildPage.displayMessage("Flipping Coin... Computer goes first.");
+        }
     };
 
     const _computerPlayersTurn = () => {
@@ -183,14 +215,16 @@ export const Game = (() => {
                 Math.floor(Math.random() * 10)
             );
         }
+        _displayLastResult(_humanPlayer);
         _switchTurns();
     };
     const _playTurn = () => {
         if (_humanPlayer.getTurn()) {
             EventHandler.activateSpaces("#computer-board");
         } else {
-            _computerPlayersTurn();
-            _playTurn();
+            _randomPause(1000, 3000)
+                .then(() => _computerPlayersTurn())
+                .then(() => _playTurn());
         }
     };
 

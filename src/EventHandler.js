@@ -17,8 +17,8 @@ export const EventHandler = (() => {
                 space.addEventListener("mouseover", BuildPage.hoverSetUp);
                 space.addEventListener("mouseout", BuildPage.hoverSetUp);
             } else if (id == "#computer-board") {
-                space.addEventListener("mouseover", BuildPage.hoverAttack);
-                space.addEventListener("mouseout", BuildPage.hoverAttack);
+                space.addEventListener("mouseover", BuildPage.addHoverAttack);
+                space.addEventListener("mouseout", BuildPage.removeHoverAttack);
             }
         });
     };

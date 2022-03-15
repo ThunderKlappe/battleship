@@ -4,6 +4,7 @@ export default function Player() {
     let _board = Board();
     let _lost = false;
     let _isTurn = false;
+    let lastResult = "";
     function isLost() {
         return _lost;
     }
@@ -23,9 +24,8 @@ export default function Player() {
         }
         return hitShipIndex;
     }
-    //for testing
     function getBoard() {
         return _board;
     }
-    return { isLost, toggleTurn, getTurn, addShip, attack, getBoard };
+    return { isLost, toggleTurn, getTurn, addShip, attack, getBoard, lastResult };
 }

@@ -91,7 +91,7 @@ button:active {
     border: 1px solid gray;
 }
 
-.board.active .hover.board-space {
+.board.active .hover.board-space:not(.attacked) {
     background-color: #9eff9e;
     border: 1px solid #4a804a;
 }
