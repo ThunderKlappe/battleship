@@ -36,8 +36,8 @@ export const Game = (() => {
             const shipDirection = DOMManip.getElement("#ship-rotate-button").dataset.direction;
             _humanPlayer.addShip(
                 shipSize,
-                e.currentTarget.dataset.xpos,
-                e.currentTarget.dataset.ypos,
+                hoverSpaces[0].dataset.xpos,
+                hoverSpaces[0].dataset.ypos,
                 shipDirection,
                 shipName
             );
@@ -89,6 +89,9 @@ export const Game = (() => {
             const attackedShip = player.attack(x, y);
             let hit = _isAttackHit(player, x, y);
             player.lastResult = hit;
+            if (hit) {
+                player.addSuccess(x, y);
+            }
             BuildPage.fillInAttack(x, y, playerName, hit);
             if (attackedShip >= 0) {
                 if (_checkDestroyed(player, attackedShip)) {
@@ -194,14 +197,245 @@ export const Game = (() => {
         //_placeComputerShips();
     };
 
+    const _isAttacked = (x, y) => {
+        if (DOMManip.getElement(`#player-board #space-${x}-${y}`).classList.contains("attacked")) {
+            return true;
+        }
+    };
+    const _isHit = (x, y) => {
+        if (DOMManip.getElement(`#player-board #space-${x}-${y}`).classList.contains("hit")) {
+            return true;
+        }
+    };
+
+    const _isDestroyed = (x, y) => {
+        if (DOMManip.getElement(`#player-board #space-${x}-${y}`).classList.contains("destroyed")) {
+            return true;
+        }
+    };
+
+    const _checkAround = lastHit => {
+        let nextHit = { xPos: lastHit.xPos, yPos: lastHit.yPos };
+
+        if (lastHit.xPos != 9) {
+            nextHit = { xPos: lastHit.xPos + 1, yPos: lastHit.yPos };
+        }
+
+        if (!_isAttacked(nextHit.xPos, nextHit.yPos)) {
+            return nextHit;
+        } else if (lastHit.xPos != 0) {
+            nextHit = { xPos: lastHit.xPos - 1, yPos: lastHit.yPos };
+        }
+
+        if (!_isAttacked(nextHit.xPos, nextHit.yPos)) {
+            return nextHit;
+        } else if (lastHit.yPos != 9) {
+            nextHit = { xPos: lastHit.xPos, yPos: lastHit.yPos + 1 };
+        }
+
+        if (!_isAttacked(nextHit.xPos, nextHit.yPos)) {
+            return nextHit;
+        } else if (lastHit.yPos != 0) {
+            nextHit = { xPos: lastHit.xPos, yPos: lastHit.yPos - 1 };
+        }
+
+        if (!_isAttacked(nextHit.xPos, nextHit.yPos)) {
+            return nextHit;
+        }
+
+        return false;
+    };
+    const _checkInLine = position => {
+        let oppPos;
+        let checkX;
+        let checkY;
+        let stop1;
+        let stop2;
+
+        let checkPos = { xPos: position.xPos + 1, yPos: position.yPos };
+        if (checkPos.xPos == 10) {
+            checkX = checkPos.xPos;
+            checkY = checkPos.yPos;
+
+            if (checkY + 1 < 10) {
+                _isHit(checkX - 1, checkY + 1) ? (stop1 = true) : (stop1 = false);
+            }
+            if (checkY - 1 >= 0) {
+                _isHit(checkX - 1, checkY - 1) ? (stop2 = true) : (stop2 = false);
+            }
+            if (!stop1 && !stop2) {
+                oppPos = { xPos: position.xPos - 1, yPos: position.yPos };
+                if (!_isAttacked(oppPos.xPos, oppPos.yPos)) {
+                    return oppPos;
+                }
+            }
+        } else if (_isHit(checkPos.xPos, checkPos.yPos)) {
+            oppPos = { xPos: position.xPos - 1, yPos: position.yPos };
+            if (oppPos.xPos >= 0) {
+                if (!_isAttacked(oppPos.xPos, oppPos.yPos)) {
+                    return oppPos;
+                }
+            }
+        }
+
+        checkPos = { xPos: position.xPos - 1, yPos: position.yPos };
+        if (checkPos.xPos == -1) {
+            checkX = checkPos.xPos;
+            checkY = checkPos.yPos;
+
+            if (checkY + 1 < 10) {
+                _isHit(checkX + 1, checkY + 1) ? (stop1 = true) : (stop1 = false);
+            }
+            if (checkY - 1 >= 0) {
+                _isHit(checkX + 1, checkY - 1) ? (stop2 = true) : (stop2 = false);
+            }
+            if (!stop1 && !stop2) {
+                oppPos = { xPos: position.xPos + 1, yPos: position.yPos };
+                if (!_isAttacked(oppPos.xPos, oppPos.yPos)) {
+                    return oppPos;
+                }
+            }
+        } else if (_isHit(checkPos.xPos, checkPos.yPos)) {
+            oppPos = { xPos: position.xPos + 1, yPos: position.yPos };
+            if (oppPos.xPos < 10) {
+                if (!_isAttacked(oppPos.xPos, oppPos.yPos)) {
+                    return oppPos;
+                }
+            }
+        }
+
+        checkPos = { xPos: position.xPos, yPos: position.yPos + 1 };
+        if (checkPos.yPos == 10) {
+            checkX = checkPos.xPos;
+            checkY = checkPos.yPos;
+
+            if (checkX + 1 < 10) {
+                _isHit(checkX + 1, checkY - 1) ? (stop1 = true) : (stop1 = false);
+            }
+            if (checkX - 1 >= 0) {
+                _isHit(checkX - 1, checkY - 1) ? (stop2 = true) : (stop2 = false);
+            }
+            if (!stop1 && !stop2) {
+                oppPos = { xPos: position.xPos, yPos: position.yPos - 1 };
+                if (!_isAttacked(oppPos.xPos, oppPos.yPos)) {
+                    return oppPos;
+                }
+            }
+        } else if (_isHit(checkPos.xPos, checkPos.yPos)) {
+            oppPos = { xPos: position.xPos, yPos: position.yPos - 1 };
+            if (oppPos.yPos >= 0) {
+                if (!_isAttacked(oppPos.xPos, oppPos.yPos)) {
+                    return oppPos;
+                }
+            }
+        }
+
+        checkPos = { xPos: position.xPos, yPos: position.yPos - 1 };
+        if (checkPos.yPos == -1) {
+            checkX = checkPos.xPos;
+            checkY = checkPos.yPos;
+
+            if (checkX + 1 < 10) {
+                _isHit(checkX + 1, checkY + 1) ? (stop1 = true) : (stop1 = false);
+            }
+            if (checkX - 1 >= 0) {
+                _isHit(checkX - 1, checkY + 1) ? (stop2 = true) : (stop2 = false);
+            }
+            if (!stop1 && !stop2) {
+                oppPos = { xPos: position.xPos, yPos: position.yPos + 1 };
+                if (!_isAttacked(oppPos.xPos, oppPos.yPos)) {
+                    return oppPos;
+                }
+            }
+        } else if (_isHit(checkPos.xPos, checkPos.yPos)) {
+            oppPos = { xPos: position.xPos, yPos: position.yPos + 1 };
+            if (oppPos.yPos < 10) {
+                if (!_isAttacked(oppPos.xPos, oppPos.yPos)) {
+                    return oppPos;
+                }
+            }
+        }
+    };
+
+    // const _checkInLine = (lastHit, previousHit) => {
+    //     let nextHit;
+    //     if (lastHit.xPos == previousHit.xPos + 1) {
+    //         nextHit = { xPos: lastHit.xPos + 1, yPos: lastHit.yPos };
+    //         if (nextHit.xPos != 10) {
+    //             if (!_isAttacked(nextHit.xPos, nextHit.yPos)) {
+    //                 return nextHit;
+    //             }
+    //         }
+    //     }
+    //     if (lastHit.xPos == previousHit.xPos - 1) {
+    //         nextHit = { xPos: lastHit.xPos - 1, yPos: lastHit.yPos };
+    //         if (nextHit.xPos != -1) {
+    //             if (!_isAttacked(nextHit.xPos, nextHit.yPos)) {
+    //                 return nextHit;
+    //             }
+    //         }
+    //     }
+    //     if (lastHit.yPos == previousHit.yPos + 1) {
+    //         nextHit = { xPos: lastHit.xPos, yPos: lastHit.yPos + 1 };
+    //         if (nextHit.yPos != 10) {
+    //             if (!_isAttacked(nextHit.xPos, nextHit.yPos)) {
+    //                 return nextHit;
+    //             }
+    //         }
+    //     }
+    //     if (lastHit.yPos == previousHit.yPos - 1) {
+    //         nextHit = { xPos: lastHit.xPos, yPos: lastHit.yPos - 1 };
+    //         if (nextHit.yPos != -1) {
+    //             if (!_isAttacked(nextHit.xPos, nextHit.yPos)) {
+    //                 return nextHit;
+    //             }
+    //         }
+    //     }
+    // };
+
+    const _chooseComputerSpot = () => {
+        const successList = _humanPlayer.getSuccess();
+        if (successList.length > 0) {
+            let i = 1;
+            while (i <= successList.length) {
+                let hitCheck = successList[successList.length - i];
+                let lastHit = successList[successList.length - 1];
+                let nextHit;
+                if (successList.length - i - 1 < 0) {
+                    if (!_isDestroyed(lastHit.xPos, lastHit.yPos)) {
+                        nextHit = _checkInLine(hitCheck);
+                        if (!nextHit) {
+                            nextHit = _checkAround(lastHit);
+                        }
+                    }
+                } else {
+                    if (!_isDestroyed(hitCheck.xPos, hitCheck.yPos)) {
+                        nextHit = _checkInLine(hitCheck);
+                    }
+                }
+                if (nextHit) {
+                    return nextHit;
+                } else {
+                    i++;
+                }
+            }
+        }
+        const hits = DOMManip.getElements("#player-board .hit");
+        if (hits.length > 0) {
+            return _checkAround({
+                xPos: parseInt(hits[0].dataset.xpos),
+                yPos: parseInt(hits[0].dataset.ypos),
+            });
+        }
+
+        return { xPos: Math.floor(Math.random() * 10), yPos: Math.floor(Math.random() * 10) };
+    };
+
     const _computerPlayersTurn = () => {
         let playedValid = false;
         while (!playedValid) {
-            playedValid = _attackPlayer(
-                _humanPlayer,
-                Math.floor(Math.random() * 10),
-                Math.floor(Math.random() * 10)
-            );
+            let attackPosition = _chooseComputerSpot();
+            playedValid = _attackPlayer(_humanPlayer, attackPosition.xPos, attackPosition.yPos);
         }
         _displayLastResult(_humanPlayer);
         _switchTurns();
@@ -233,7 +467,7 @@ export const Game = (() => {
             if (_humanPlayer.getTurn()) {
                 EventHandler.activateSpaces("#computer-board");
             } else {
-                _randomPause(1000, 2000)
+                _randomPause(500, 500)
                     .then(() => _computerPlayersTurn())
                     .then(() => _playTurn());
             }
