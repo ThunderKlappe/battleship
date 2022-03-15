@@ -193,6 +193,20 @@ export const Game = (() => {
         }
         //_placeComputerShips();
     };
+
+    const _computerPlayersTurn = () => {
+        let playedValid = false;
+        while (!playedValid) {
+            playedValid = _attackPlayer(
+                _humanPlayer,
+                Math.floor(Math.random() * 10),
+                Math.floor(Math.random() * 10)
+            );
+        }
+        _displayLastResult(_humanPlayer);
+        _switchTurns();
+    };
+
     const _randomPause = (minLength, maxLength) => {
         const pauseLength = Math.floor(Math.random() * (maxLength - minLength) + minLength);
         return new Promise(resolve => setTimeout(resolve, pauseLength));
@@ -208,25 +222,21 @@ export const Game = (() => {
         }
     };
 
-    const _computerPlayersTurn = () => {
-        let playedValid = false;
-        while (!playedValid) {
-            playedValid = _attackPlayer(
-                _humanPlayer,
-                Math.floor(Math.random() * 10),
-                Math.floor(Math.random() * 10)
-            );
-        }
-        _displayLastResult(_humanPlayer);
-        _switchTurns();
-    };
     const _playTurn = () => {
-        if (_humanPlayer.getTurn()) {
-            EventHandler.activateSpaces("#computer-board");
+        if (_humanPlayer.isLost()) {
+            BuildPage.displayMessage("The computer has destroyed your entire fleet... Play Again?");
+        } else if (_computerPlayer.isLost()) {
+            BuildPage.displayMessage(
+                "You've successfully destroyed all of the computer's ships! Play Again?"
+            );
         } else {
-            _randomPause(1000, 3000)
-                .then(() => _computerPlayersTurn())
-                .then(() => _playTurn());
+            if (_humanPlayer.getTurn()) {
+                EventHandler.activateSpaces("#computer-board");
+            } else {
+                _randomPause(1000, 2000)
+                    .then(() => _computerPlayersTurn())
+                    .then(() => _playTurn());
+            }
         }
     };
 
