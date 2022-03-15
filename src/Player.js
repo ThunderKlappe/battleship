@@ -6,6 +6,7 @@ export default function Player(name) {
     let _lost = false;
     let _isTurn = false;
     let lastResult = "";
+    let _attackSuccess = [];
     function getName() {
         return _name;
     }
@@ -31,5 +32,22 @@ export default function Player(name) {
     function getBoard() {
         return _board;
     }
-    return { getName, isLost, toggleTurn, getTurn, addShip, attack, getBoard, lastResult };
+    function addSuccess(x, y) {
+        _attackSuccess.push({ xPos: x, yPos: y });
+    }
+    function getSuccess() {
+        return _attackSuccess.map(x => x);
+    }
+    return {
+        getName,
+        isLost,
+        toggleTurn,
+        getTurn,
+        addShip,
+        attack,
+        getBoard,
+        addSuccess,
+        getSuccess,
+        lastResult,
+    };
 }
