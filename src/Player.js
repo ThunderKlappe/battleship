@@ -1,10 +1,14 @@
 import Board from "./Gameboard";
 
-export default function Player() {
+export default function Player(name) {
+    let _name = name;
     let _board = Board();
     let _lost = false;
     let _isTurn = false;
     let lastResult = "";
+    function getName() {
+        return _name;
+    }
     function isLost() {
         return _lost;
     }
@@ -27,5 +31,5 @@ export default function Player() {
     function getBoard() {
         return _board;
     }
-    return { isLost, toggleTurn, getTurn, addShip, attack, getBoard, lastResult };
+    return { getName, isLost, toggleTurn, getTurn, addShip, attack, getBoard, lastResult };
 }

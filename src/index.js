@@ -13,8 +13,8 @@ export const Game = (() => {
     let _computerPlayer;
     const newGame = () => {
         BuildPage.buildNewGameModal();
-        _humanPlayer = Player();
-        _computerPlayer = Player();
+        _humanPlayer = Player("player");
+        _computerPlayer = Player("computer");
     };
     const spaceClicked = e => {
         e.currentTarget.parentElement.id == "set-up-board" ? _placeBoat(e) : _attackComputerPlayer(e);
@@ -71,17 +71,19 @@ export const Game = (() => {
         return hit;
     };
 
-    const _checkDestroyed = (player, playerName, attackedShip) => {
+    const _checkDestroyed = (player, attackedShip) => {
         if (player.getBoard().getShips()[attackedShip].isDestroyed()) {
-            BuildPage.markDestroyedShip(player.getBoard().getShips()[attackedShip].getPosition(), playerName);
+            BuildPage.markDestroyedShip(
+                player.getBoard().getShips()[attackedShip].getPosition(),
+                player.getName()
+            );
             return true;
         }
         return false;
     };
 
     const _attackPlayer = (player, x, y) => {
-        let playerName;
-        player == _humanPlayer ? (playerName = "player") : (playerName = "computer");
+        const playerName = player.getName();
 
         if (_isAttackValid(player, x, y)) {
             const attackedShip = player.attack(x, y);
@@ -89,7 +91,7 @@ export const Game = (() => {
             player.lastResult = hit;
             BuildPage.fillInAttack(x, y, playerName, hit);
             if (attackedShip >= 0) {
-                if (_checkDestroyed(player, playerName, attackedShip)) {
+                if (_checkDestroyed(player, attackedShip)) {
                     player.lastResult = player.getBoard().getShips()[attackedShip].getName();
                 }
             }
