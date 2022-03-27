@@ -156,7 +156,7 @@ button:active {
     background-color: #e45826;
     border: 2px solid #1b1a17;
     border-radius: 30px;
-    height: fit-content;
+    height: inherit;
     padding: 40px;
     display: flex;
     flex-direction: column;
